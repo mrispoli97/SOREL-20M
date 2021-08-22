@@ -21,44 +21,6 @@ class Downloader:
     def _get_progress(self, current_step, num_steps):
         return int(current_step / num_steps * 100)
 
-    def _debug_doc(self):
-        import boto3
-        import botocore
-
-        filename = '020cafa9f87cd60f427ba751f2d55ad4ee4378c3cc7cdaf01d05464218f62d33'
-        dst_dir = os.path.join(cfg.BASE_DIR, 'dataset', 'file_infector')
-        s3 = boto3.resource('s3')
-
-        try:
-            s3.Bucket(self._bucket).download_file(self._prefix+'/'+filename, os.path.join(dst_dir, filename))
-        except botocore.exceptions.ClientError as e:
-            if e.response['Error']['Code'] == "404":
-                print("The object does not exist.")
-            else:
-                raise
-
-    def _debug(self):
-        # objects = self._client.list_objects_v2(Bucket=self._bucket, Prefix=self._prefix)
-        # for obj in objects['Contents']:
-        #     print(obj['Key'])
-
-        filename = '252f1ef78fa9490b04704c0527bde9ed3a361bdd700c432309996cbcbd23fe19'
-        paginator = self._client.get_paginator('list_objects_v2')
-        page_iterator = paginator.paginate(Bucket=self._bucket)
-
-        found = False
-        for page in page_iterator:
-            if page['KeyCount'] > 0:
-                for item in page['Contents']:
-                    key = item['Key']
-                    if filename in key:
-                        found = True
-                        print(f"Found {filename}")
-                    if found:
-                        break
-            if found:
-                break
-
     def download_files(self, dict, dst, verbose=True):
         if not os.path.exists(dst):
             os.makedirs(dst)
@@ -94,7 +56,8 @@ class Downloader:
     def download_file(self, filename, dst, verbose=False):
         dst_filepath = os.path.join(dst, filename)
         try:
-            self._client.download_file(self._bucket, self._prefix+"/"+filename, dst_filepath)
+            if not os.path.exists(dst_filepath):
+                self._client.download_file(self._bucket, self._prefix+"/"+filename, dst_filepath)
             if verbose:
                 print(f"{filename} downloaded successfully in {dst}")
             return dst_filepath

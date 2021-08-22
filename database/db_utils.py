@@ -1,6 +1,7 @@
 import os
 from utils import utils as u
 from binary_database import BinaryDatabase
+import config as cfg
 
 def save_sha256_for_samples_with_both_binary_and_features():
     samples_with_features_dir = r"/samples_with_features"
@@ -102,14 +103,18 @@ def sort_malwares_by_threshold():
            data=malware_samples, type='json')
 
 
-def select(max=10):
-    samples_with_both_features_and_binaries_dir = r"/samples_with_both_features_and_binaries"
+def select(max=100):
+    samples_with_both_features_and_binaries_dir = os.path.join(cfg.BASE_DIR, "samples_with_both_features_and_binaries")
     data = u.load(os.path.join(samples_with_both_features_and_binaries_dir, 'family_sample_threshold.json'),
                   type='json')
     selected = {}
     for family, samples in data.items():
         selected[family] = [sample['sha256'] for sample in samples[:max]]
 
-    u.save(os.path.join(samples_with_both_features_and_binaries_dir, 'selected.json'), data=selected,
+    u.save(os.path.join(samples_with_both_features_and_binaries_dir, 'selected - '+str(max)+'.json'), data=selected,
            type='json')
     print("Saved")
+
+
+if __name__ == '__main__':
+    select(max=6899)
