@@ -44,12 +44,12 @@ def split_into_train_validation_test():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dst', help='src folder path', required=True)
     parser.add_argument('--src', help='dst folder path', required=True)
-    parser.add_argument('--train_partition', help='train partition factor', required=False)
+    parser.add_argument('--train_partition', help='train partition factor', required=False, default=0.7)
     args = vars(parser.parse_args())
 
     src = args['src']
     dst = args['dst']
-    train_partition = args['train_partition'] if 'train_partition' in args else 0.7
+    train_partition = args['train_partition']
     families = os.listdir(src)
 
     num_families = len(families)
@@ -64,8 +64,8 @@ def split_into_train_validation_test():
         samples = os.listdir(family_dir_path)
         num_samples = len(samples)
         val_partition = (1 - train_partition) / 2
-        num_train_samples = train_partition * num_samples
-        num_val_samples = val_partition * num_samples
+        num_train_samples = int(train_partition * num_samples)
+        num_val_samples = int(val_partition * num_samples)
         train_samples = samples[:num_train_samples]
         val_samples = samples[num_train_samples: num_train_samples + num_val_samples]
         test_samples = samples[num_train_samples + num_val_samples:]
