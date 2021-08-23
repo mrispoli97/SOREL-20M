@@ -121,5 +121,9 @@ def get_progress_percentage(step, num_steps):
     return int(step / num_steps * 100) if num_steps > 0 else 100
 
 
+
+
+
+
 if __name__ == '__main__':
     select(max=6899)

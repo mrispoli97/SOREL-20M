@@ -40,5 +40,55 @@ def extract_features():
     get_features_of_selected_samples(dst=args['dst'], db_path=args['db_path'])
 
 
+def split_into_train_validation_test():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dst', help='src folder path', required=True)
+    parser.add_argument('--src', help='dst folder path', required=True)
+    parser.add_argument('--train_partition', help='train partition factor', required=False)
+    args = vars(parser.parse_args())
+
+    src = args['src']
+    dst = args['dst']
+    train_partition = args['train_partition'] if 'train_partition' in args else 0.7
+    families = os.listdir(src)
+
+    num_families = len(families)
+    num_families_processed = 0
+
+    for family in families:
+        family_dir_path = os.path.join(src, family)
+        for mode in ['train', 'validation', 'test']:
+            dst_family_dir_path = os.path.join(dst, mode, family)
+            if not os.path.exists(dst_family_dir_path):
+                os.makedirs(dst_family_dir_path)
+        samples = os.listdir(family_dir_path)
+        num_samples = len(samples)
+        val_partition = (1 - train_partition) / 2
+        num_train_samples = train_partition * num_samples
+        num_val_samples = val_partition * num_samples
+        train_samples = samples[:num_train_samples]
+        val_samples = samples[num_train_samples: num_train_samples + num_val_samples]
+        test_samples = samples[num_train_samples + num_val_samples:]
+
+        data = {
+            'train': train_samples,
+            'validation': val_samples,
+            'test': test_samples
+        }
+
+        for mode, samples in data.items():
+            num_samples = len(samples)
+            num_samples_processed = 0
+            for sample in samples:
+                print(
+                    f"Processing [{num_families_processed + 1}/{num_families}][{num_samples_processed + 1}/{num_samples}]")
+                src_sample = os.path.join(src, family, sample)
+                dst_sample = os.path.join(dst, mode, family, sample)
+                os.replace(src_sample, dst_sample)
+                num_samples_processed += 1
+
+        num_families_processed += 1
+
+
 if __name__ == '__main__':
-    download_files()
+    split_into_train_validation_test()
