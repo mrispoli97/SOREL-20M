@@ -1,7 +1,7 @@
 import os
 from utils import utils as u
-from binary_database import BinaryDatabase
-import config as cfg
+from database.binary_database import BinaryDatabase
+from config import config as cfg
 
 
 def save_sha256_for_samples_with_both_binary_and_features():

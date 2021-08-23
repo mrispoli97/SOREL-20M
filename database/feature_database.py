@@ -3,8 +3,7 @@ import msgpack
 import zlib
 import numpy as np
 import sys
-sys.path.append('..')
-import config as cfg
+from config import config as cfg
 from pprint import pprint
 from utils import utils as u
 from database import db_utils as dbu

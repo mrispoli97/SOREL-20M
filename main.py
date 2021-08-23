@@ -1,7 +1,7 @@
 from download.download import Downloader
 from database.feature_database import get_features_of_selected_samples
 from utils import utils
-import config as cfg
+from config import config as cfg
 import os
 from datetime import datetime
 import argparse

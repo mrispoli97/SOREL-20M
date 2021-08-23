@@ -2,7 +2,6 @@ import boto3
 from botocore import UNSIGNED
 from botocore.config import Config
 import os
-import config as cfg
 
 
 class Downloader:
