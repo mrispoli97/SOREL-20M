@@ -4,6 +4,7 @@ from botocore.config import Config
 import os
 import config as cfg
 
+
 class Downloader:
 
     def __init__(self, config=None):
@@ -57,7 +58,7 @@ class Downloader:
         dst_filepath = os.path.join(dst, filename)
         try:
             if not os.path.exists(dst_filepath):
-                self._client.download_file(self._bucket, self._prefix+"/"+filename, dst_filepath)
+                self._client.download_file(self._bucket, self._prefix + "/" + filename, dst_filepath)
             if verbose:
                 print(f"{filename} downloaded successfully in {dst}")
             return dst_filepath

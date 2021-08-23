@@ -3,6 +3,7 @@ from utils import utils as u
 from binary_database import BinaryDatabase
 import config as cfg
 
+
 def save_sha256_for_samples_with_both_binary_and_features():
     samples_with_features_dir = r"/samples_with_features"
     samples_with_both_features_and_binaries_dir = r"/samples_with_both_features_and_binaries"
@@ -111,9 +112,13 @@ def select(max=100):
     for family, samples in data.items():
         selected[family] = [sample['sha256'] for sample in samples[:max]]
 
-    u.save(os.path.join(samples_with_both_features_and_binaries_dir, 'selected - '+str(max)+'.json'), data=selected,
+    u.save(os.path.join(samples_with_both_features_and_binaries_dir, 'selected - ' + str(max) + '.json'), data=selected,
            type='json')
     print("Saved")
+
+
+def get_progress_percentage(step, num_steps):
+    return int(step / num_steps * 100) if num_steps > 0 else 100
 
 
 if __name__ == '__main__':
