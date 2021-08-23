@@ -66,7 +66,8 @@ class FeatureDatabase(object):
         return data
 
     def get_files(self, sha256_to_get):
-        sha256_missing = sha256_to_get.copy()
+        num_to_find = len(sha256_to_get)
+        num_found = 0
         data = {}
 
         with self.env.begin(write=False) as txn:
@@ -79,11 +80,11 @@ class FeatureDatabase(object):
                 print(f"processing: {percentage}%")
                 for key, item in curs:
                     sha256 = key.decode('utf-8')
-                    if item and sha256 in sha256_missing.copy():
+                    if item and sha256 in sha256_to_get:
                         features = msgpack.loads(zlib.decompress(item), strict_map_key=False)[0]
                         data[sha256] = features
-                        sha256_missing.remove(sha256)
-                        if len(sha256_missing) == 0:
+                        num_found += 1
+                        if num_found == num_to_find:
                             break
 
                     num_items_processed += 1
