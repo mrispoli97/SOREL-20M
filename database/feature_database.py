@@ -2,6 +2,8 @@ import lmdb
 import msgpack
 import zlib
 import numpy as np
+import sys
+sys.path.append('..')
 import config as cfg
 from pprint import pprint
 from utils import utils as u
