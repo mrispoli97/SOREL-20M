@@ -7,7 +7,7 @@ sys.path.append('..')
 import config as cfg
 from pprint import pprint
 from utils import utils as u
-import db_utils as dbu
+from database import db_utils as dbu
 import os
 import argparse
 
