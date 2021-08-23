@@ -137,10 +137,3 @@ def get_features_of_selected_samples(dst=None, db_path=None):
         u.save(filepath=os.path.join(family_dir, family + '.json'), data=features, type='json')
     print("Saved.")
 
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dst', help='dst folder path', required=False, default=None)
-    parser.add_argument('--db_path', help='db path', required=False, default=None)
-    args = vars(parser.parse_args())
-    get_features_of_selected_samples(dst=args['dst'], db_path=args['db_path'])

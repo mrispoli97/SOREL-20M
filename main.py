@@ -1,4 +1,5 @@
 from download.download import Downloader
+from database.feature_database import get_features_of_selected_samples
 from utils import utils
 import config as cfg
 import os
@@ -31,5 +32,13 @@ def download_files():
     save_report(report)
 
 
+def extract_features():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dst', help='dst folder path', required=False, default=None)
+    parser.add_argument('--db_path', help='db path', required=False, default=None)
+    args = vars(parser.parse_args())
+    get_features_of_selected_samples(dst=args['dst'], db_path=args['db_path'])
+
+
 if __name__ == '__main__':
-    download_files()
+    extract_features()
