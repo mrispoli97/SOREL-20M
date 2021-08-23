@@ -41,4 +41,4 @@ def extract_features():
 
 
 if __name__ == '__main__':
-    extract_features()
+    download_files()
