@@ -106,7 +106,7 @@ class FeatureDatabase(object):
         return x
 
 
-def get_features_of_selected_samples(dst=None):
+def get_features_of_selected_samples(dst=None, db_path=None):
     selected_samples = u.load(
         filepath=os.path.join(cfg.BASE_DIR, 'samples_with_both_features_and_binaries', 'selected - 6899.json'),
         type='json'
@@ -116,7 +116,7 @@ def get_features_of_selected_samples(dst=None):
         for sha256 in samples:
             sha256s.append(sha256)
 
-    db = FeatureDatabase()
+    db = FeatureDatabase(db_path)
     print("Features extraction ...")
     data = db.get_files(sha256s)
 
@@ -139,5 +139,6 @@ def get_features_of_selected_samples(dst=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dst', help='dst folder path', required=False, default=None)
+    parser.add_argument('--db_path', help='db path', required=False, default=None)
     args = vars(parser.parse_args())
-    get_features_of_selected_samples(dst=args['dst'])
+    get_features_of_selected_samples(dst=args['dst'], db_path=args['db_path'])
