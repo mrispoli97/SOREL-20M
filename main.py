@@ -5,6 +5,8 @@ from config import config as cfg
 import os
 from datetime import datetime
 import argparse
+from feature_extraction.feature_extraction import PEFeatureExtractor
+from pprint import pprint
 
 
 def save_report(report):
@@ -42,8 +44,8 @@ def extract_features():
 
 def split_into_train_validation_test():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dst', help='src folder path', required=True)
-    parser.add_argument('--src', help='dst folder path', required=True)
+    parser.add_argument('--dst', help='dst folder path', required=True)
+    parser.add_argument('--src', help='src folder path', required=True)
     parser.add_argument('--train_partition', help='train partition factor', required=False, default=0.7)
     args = vars(parser.parse_args())
 
@@ -90,5 +92,40 @@ def split_into_train_validation_test():
         num_families_processed += 1
 
 
+def extract_features():
+    parser = argparse.ArgumentParser()
+    default_dst = os.path.join(cfg.BASE_DIR, 'features', 'benign')
+    parser.add_argument('--src', help='src folder path', required=True)
+    parser.add_argument('--dst', help='dst folder path', required=False, default=default_dst)
+    args = vars(parser.parse_args())
+    src = args['src']
+    dst = args['dst']
+    extractor = PEFeatureExtractor()
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+
+    data = {}
+    files = os.listdir(src)
+    num_files = len(files)
+    num_files_processed = 0
+    percentage = utils.get_percentage(num_files_processed, num_files)
+    print(f"Elaborating features... {percentage}")
+    for filename in files:
+        filepath = os.path.join(src, filename)
+        with open(filepath, 'rb') as f:
+            data = f.read()
+        features = extractor.feature_vector(data)
+        data[filename] = features
+        num_files_processed += 1
+        new_percentage = utils.get_percentage(num_files_processed, num_files)
+        if new_percentage > percentage:
+            percentage = new_percentage
+            print(f"Elaborating features... {percentage}")
+
+    _, dst_name = os.path.split(dst)
+    dst_filepath = os.path.join(dst, dst_name + ".json")
+    utils.save(dst_filepath, data=data, type='json')
+
+
 if __name__ == '__main__':
-    split_into_train_validation_test()
+    extract_features()

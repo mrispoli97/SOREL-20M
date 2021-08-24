@@ -62,3 +62,7 @@ def load(filepath, type, verbose=False):
             return data
     else:
         raise ValueError(f"type {type} is not supported.")
+
+
+def get_percentage(num_step, steps):
+    return int(num_step/steps*100)
