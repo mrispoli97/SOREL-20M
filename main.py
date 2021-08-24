@@ -116,7 +116,7 @@ def extract_features():
         with open(filepath, 'rb') as f:
             data = f.read()
         features = extractor.feature_vector(data)
-        
+        features = [str(feature) for feature in features]
         if num_files_processed == 0:
             print(features)
         data[filename] = features
