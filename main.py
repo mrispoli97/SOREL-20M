@@ -3,6 +3,7 @@ from database.feature_database import get_features_of_selected_samples
 from utils import utils
 from config import config as cfg
 import os
+import numpy as np
 from datetime import datetime
 import argparse
 from feature_extraction.feature_extraction import PEFeatureExtractor
@@ -114,7 +115,7 @@ def extract_features():
         filepath = os.path.join(src, filename)
         with open(filepath, 'rb') as f:
             data = f.read()
-        features = bytearray(extractor.feature_vector(data))
+        features = np.asarray(extractor.feature_vector(data))
         if num_files_processed == 0:
             print(features)
         data[filename] = features
