@@ -114,7 +114,7 @@ def extract_features():
         filepath = os.path.join(src, filename)
         with open(filepath, 'rb') as f:
             data = f.read()
-        features = extractor.feature_vector(data)
+        features = list(extractor.feature_vector(data))
         data[filename] = features
         num_files_processed += 1
         new_percentage = utils.get_percentage(num_files_processed, num_files)
