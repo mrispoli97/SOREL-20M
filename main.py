@@ -115,7 +115,7 @@ def extract_features():
         filepath = os.path.join(src, filename)
         with open(filepath, 'rb') as f:
             data = f.read()
-        features = np.asarray(extractor.feature_vector(data))
+        features = np.asarray(bytes(extractor.feature_vector(data)))
         if num_files_processed == 0:
             print(features)
         data[filename] = features
