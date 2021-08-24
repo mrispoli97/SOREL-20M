@@ -65,4 +65,4 @@ def load(filepath, type, verbose=False):
 
 
 def get_percentage(num_step, steps):
-    return int(num_step/steps*100)
+    return int(num_step/steps*100) if steps > 0 else 100
