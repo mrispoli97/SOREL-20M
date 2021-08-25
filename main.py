@@ -108,6 +108,8 @@ def extract_features():
     if not os.path.exists(dst):
         os.makedirs(dst)
 
+    num_families = len(list(data.keys()))
+    num_families_processed = 0
     for family, samples in data.items():
 
         family_dir_path = os.path.join(src, family)
@@ -119,17 +121,18 @@ def extract_features():
         num_files = len(samples)
         num_files_processed = 0
         percentage = utils.get_percentage(num_files_processed, num_files)
-        print(f"[{family}] Elaborating features... {percentage}")
+        print(f"[{num_families_processed+1}/{num_families}] Elaborating features... {percentage}")
         for filename in samples:
             filepath = os.path.join(family_dir_path, filename)
             with open(filepath, 'rb') as f:
                 bytes = f.read()
+
             features[filename] = str(extractor.feature_vector(bytes))
             num_files_processed += 1
             new_percentage = utils.get_percentage(num_files_processed, num_files)
             if new_percentage > percentage:
                 percentage = new_percentage
-                print(f"[{family}] Elaborating features... {percentage}")
+                print(f"[{num_families_processed+1}/{num_families}] Elaborating features... {percentage}")
 
         dst_filepath = os.path.join(dst_family_dir_path, family + ".json")
         utils.save(dst_filepath, data=features, type='json')
