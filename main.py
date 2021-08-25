@@ -95,7 +95,7 @@ def split_into_train_validation_test():
 
 def extract_features():
     parser = argparse.ArgumentParser()
-    default_dst = os.path.join(cfg.BASE_DIR, 'features', 'benign')
+    default_dst = os.path.join(cfg.BASE_DIR, 'features')
     parser.add_argument('--src', help='src folder path', required=True)
     parser.add_argument('--dst', help='dst folder path', required=False, default=default_dst)
     args = vars(parser.parse_args())
@@ -105,27 +105,32 @@ def extract_features():
     if not os.path.exists(dst):
         os.makedirs(dst)
 
-    data = {}
-    files = os.listdir(src)
-    num_files = len(files)
-    num_files_processed = 0
-    percentage = utils.get_percentage(num_files_processed, num_files)
-    print(f"Elaborating features... {percentage}")
-    for filename in files:
-        filepath = os.path.join(src, filename)
-        with open(filepath, 'rb') as f:
-            bytes = f.read()
-        features = extractor.feature_vector(bytes)
-        data[filename] = str(features)
-        num_files_processed += 1
-        new_percentage = utils.get_percentage(num_files_processed, num_files)
-        if new_percentage > percentage:
-            percentage = new_percentage
-            print(f"Elaborating features... {percentage}")
+    families = os.listdir(src)
+    for family in families:
+        family_dir_path = os.path.join(src, family)
+        dst_family_dir_path = os.path.join(dst, family)
+        if not os.path.exists(dst_family_dir_path):
+            os.mkdir(dst_family_dir_path)
+        data = {}
+        files = os.listdir(family_dir_path)
+        num_files = len(files)
+        num_files_processed = 0
+        percentage = utils.get_percentage(num_files_processed, num_files)
+        print(f"[{family}] Elaborating features... {percentage}")
+        for filename in files:
+            filepath = os.path.join(family_dir_path, filename)
+            with open(filepath, 'rb') as f:
+                bytes = f.read()
+            features = extractor.feature_vector(bytes)
+            data[filename] = str(features)
+            num_files_processed += 1
+            new_percentage = utils.get_percentage(num_files_processed, num_files)
+            if new_percentage > percentage:
+                percentage = new_percentage
+                print(f"[{family}] Elaborating features... {percentage}")
 
-    _, dst_name = os.path.split(dst)
-    dst_filepath = os.path.join(dst, dst_name + ".json")
-    utils.save(dst_filepath, data=data, type='json')
+        dst_filepath = os.path.join(dst_family_dir_path, family + ".json")
+        utils.save(dst_filepath, data=data, type='json')
 
 
 if __name__ == '__main__':
