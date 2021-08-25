@@ -98,31 +98,33 @@ def extract_features():
     default_dst = os.path.join(cfg.BASE_DIR, 'features')
     parser.add_argument('--src', help='src folder path', required=True)
     parser.add_argument('--dst', help='dst folder path', required=False, default=default_dst)
+    parser.add_argument('--samples', help='samples file path', required=True)
     args = vars(parser.parse_args())
     src = args['src']
     dst = args['dst']
+    samples_file_path = args['samples']
+    data = utils.load(samples_file_path, type='json')
     extractor = PEFeatureExtractor()
     if not os.path.exists(dst):
         os.makedirs(dst)
 
-    families = os.listdir(src)
-    for family in families:
+    for family, samples in data.items():
+
         family_dir_path = os.path.join(src, family)
         dst_family_dir_path = os.path.join(dst, family)
         if not os.path.exists(dst_family_dir_path):
             os.mkdir(dst_family_dir_path)
-        data = {}
-        files = os.listdir(family_dir_path)
-        num_files = len(files)
+        features = {}
+
+        num_files = len(samples)
         num_files_processed = 0
         percentage = utils.get_percentage(num_files_processed, num_files)
         print(f"[{family}] Elaborating features... {percentage}")
-        for filename in files:
+        for filename in samples:
             filepath = os.path.join(family_dir_path, filename)
             with open(filepath, 'rb') as f:
                 bytes = f.read()
-            features = extractor.feature_vector(bytes)
-            data[filename] = str(features)
+            features[filename] = str(extractor.feature_vector(bytes))
             num_files_processed += 1
             new_percentage = utils.get_percentage(num_files_processed, num_files)
             if new_percentage > percentage:
@@ -130,7 +132,7 @@ def extract_features():
                 print(f"[{family}] Elaborating features... {percentage}")
 
         dst_filepath = os.path.join(dst_family_dir_path, family + ".json")
-        utils.save(dst_filepath, data=data, type='json')
+        utils.save(dst_filepath, data=features, type='json')
 
 
 if __name__ == '__main__':
