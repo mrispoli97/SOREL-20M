@@ -185,4 +185,4 @@ def count_samples_with_features():
 
 
 if __name__ == '__main__':
-    extract_features_from_samples_in_directory()
+    extract_features()
