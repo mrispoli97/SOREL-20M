@@ -146,6 +146,9 @@ def extract_features_from_samples_in_directory():
     args = vars(parser.parse_args())
     src = args['src']
     dst = args['dst']
+
+    _, family = os.path.split(src)
+    print(f"family: {family}")
     if not os.path.exists(dst):
         os.mkdir(dst)
     features = {}
@@ -166,7 +169,7 @@ def extract_features_from_samples_in_directory():
         if new_percentage > percentage:
             percentage = new_percentage
             print(f"Elaborating features... {percentage}")
-    _, family = os.path.split(src)
+
 
     dst_filepath = os.path.join(dst, family + ".json")
     print(f"saving to {dst_filepath}")
