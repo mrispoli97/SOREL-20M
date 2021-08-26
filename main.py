@@ -145,7 +145,7 @@ def count_samples_with_features():
     src = args['src']
     families = os.listdir(src)
     for family in families:
-        json_data = utils.load(os.path.join(src, family, family+'.json'))
+        json_data = utils.load(os.path.join(src, family, family+'.json'), type='json')
         print(f"{family}: {len(json_data)}")
 
 
