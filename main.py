@@ -134,6 +134,7 @@ def extract_features():
                 percentage = new_percentage
                 print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}")
 
+        num_families_processed += 1
         dst_filepath = os.path.join(dst_family_dir_path, family + ".json")
         utils.save(dst_filepath, data=features, type='json')
 
