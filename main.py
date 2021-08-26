@@ -138,5 +138,16 @@ def extract_features():
         utils.save(dst_filepath, data=features, type='json')
 
 
+def count_samples_with_features():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--src', help='src folder path', required=True)
+    args = vars(parser.parse_args())
+    src = args['src']
+    families = os.listdir(src)
+    for family in families:
+        json_data = utils.load(os.path.join(src, family, family+'.json'))
+        print(f"{family}: {len(json_data)}")
+
+
 if __name__ == '__main__':
-    extract_features()
+    count_samples_with_features()
