@@ -161,7 +161,7 @@ def extract_features_from_samples_in_directory():
         num_files_processed = 0
         percentage = utils.get_percentage(num_files_processed, num_files)
         extractor = PEFeatureExtractor()
-        print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}")
+        print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}%")
         for sample in samples:
             filepath = os.path.join(family_src, sample)
             with open(filepath, 'rb') as f:
@@ -172,7 +172,7 @@ def extract_features_from_samples_in_directory():
             new_percentage = utils.get_percentage(num_files_processed, num_files)
             if new_percentage > percentage:
                 percentage = new_percentage
-                print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}")
+                print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}%")
         num_families_processed += 1
 
         dst_filepath = os.path.join(family_dst, family + ".json")
