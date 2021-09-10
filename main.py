@@ -163,7 +163,7 @@ def extract_features_from_samples_in_directory():
         extractor = PEFeatureExtractor()
         print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}")
         for sample in samples:
-            filepath = os.path.join(src, sample)
+            filepath = os.path.join(family_src, sample)
             with open(filepath, 'rb') as f:
                 bytes = f.read()
 
