@@ -154,7 +154,7 @@ def extract_features_from_samples_in_directory():
         family_src = os.path.join(src, family)
         family_dst = os.path.join(dst, family)
         if not os.path.exists(family_dst):
-            os.mkdir(family_dst)
+            os.makedirs(family_dst)
         features = {}
         samples = os.listdir(family_src)
         num_files = len(samples)
