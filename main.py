@@ -93,7 +93,7 @@ def split_into_train_validation_test():
         num_families_processed += 1
 
 
-def extract_features():
+def extract_features_from_all():
     parser = argparse.ArgumentParser()
     default_dst = os.path.join(cfg.BASE_DIR, 'features')
     parser.add_argument('--src', help='src folder path', required=True)
@@ -147,33 +147,37 @@ def extract_features_from_samples_in_directory():
     src = args['src']
     dst = args['dst']
 
-    _, family = os.path.split(src)
-    print(f"family: {family}")
-    if not os.path.exists(dst):
-        os.mkdir(dst)
-    features = {}
-    samples = os.listdir(src)
-    num_files = len(samples)
-    num_files_processed = 0
-    percentage = utils.get_percentage(num_files_processed, num_files)
-    extractor = PEFeatureExtractor()
-    print(f"Elaborating features... {percentage}")
-    for sample in samples:
-        filepath = os.path.join(src, sample)
-        with open(filepath, 'rb') as f:
-            bytes = f.read()
+    families = os.listdir(src)
+    num_families = len(families)
+    num_families_processed = 0
+    for family in families:
+        family_src = os.path.join(src, family)
+        family_dst = os.path.join(dst, family)
+        if not os.path.exists(family_dst):
+            os.mkdir(family_dst)
+        features = {}
+        samples = os.listdir(family_src)
+        num_files = len(samples)
+        num_files_processed = 0
+        percentage = utils.get_percentage(num_files_processed, num_files)
+        extractor = PEFeatureExtractor()
+        print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}")
+        for sample in samples:
+            filepath = os.path.join(src, sample)
+            with open(filepath, 'rb') as f:
+                bytes = f.read()
 
-        features[sample] = [str(value) for value in extractor.feature_vector(bytes)]
-        num_files_processed += 1
-        new_percentage = utils.get_percentage(num_files_processed, num_files)
-        if new_percentage > percentage:
-            percentage = new_percentage
-            print(f"Elaborating features... {percentage}")
+            features[sample] = [str(value) for value in extractor.feature_vector(bytes)]
+            num_files_processed += 1
+            new_percentage = utils.get_percentage(num_files_processed, num_files)
+            if new_percentage > percentage:
+                percentage = new_percentage
+                print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}")
+        num_families_processed += 1
 
-
-    dst_filepath = os.path.join(dst, family + ".json")
-    print(f"saving to {dst_filepath}")
-    utils.save(dst_filepath, data=features, type='json')
+        dst_filepath = os.path.join(family_dst, family + ".json")
+        print(f"saving {family}.json to {family_dst}")
+        utils.save(dst_filepath, data=features, type='json')
 
 
 def count_samples_with_features():
