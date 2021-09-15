@@ -8,6 +8,7 @@ from datetime import datetime
 import argparse
 from feature_extraction.feature_extraction import PEFeatureExtractor
 from pprint import pprint
+import pandas as pd
 
 
 def save_report(report):
@@ -147,6 +148,8 @@ def extract_features_from_samples_in_directory():
     src = args['src']
     dst = args['dst']
 
+    dataframe = pd.DataFrame()
+
     families = os.listdir(src)
     num_families = len(families)
     num_families_processed = 0
@@ -167,7 +170,10 @@ def extract_features_from_samples_in_directory():
             with open(filepath, 'rb') as f:
                 bytes = f.read()
 
-            features[sample] = [str(value) for value in extractor.feature_vector(bytes)]
+            features = [str(value) for value in extractor.feature_vector(bytes)]
+            features_df = {'label': family, 'id': sample}
+            features_df.update({'feature_' + str(i): float(feature) for i, feature in enumerate(features)})
+            dataframe = dataframe.append(features_df, ignore_index=True)
             num_files_processed += 1
             new_percentage = utils.get_percentage(num_files_processed, num_files)
             if new_percentage > percentage:
@@ -175,9 +181,7 @@ def extract_features_from_samples_in_directory():
                 print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}%")
         num_families_processed += 1
 
-        dst_filepath = os.path.join(family_dst, family + ".json")
-        print(f"saving {family}.json to {family_dst}")
-        utils.save(dst_filepath, data=features, type='json')
+        dataframe.to_pickle(os.path.join(dst, 'data.pkl'))
 
 
 def count_samples_with_features():
