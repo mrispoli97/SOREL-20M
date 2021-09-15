@@ -181,7 +181,7 @@ def extract_features_from_samples_in_directory():
                 print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}%")
         num_families_processed += 1
 
-        dataframe.to_pickle(os.path.join(dst, 'data.pkl'))
+    dataframe.to_pickle(os.path.join(dst, 'data.pkl'))
 
 
 def count_samples_with_features():
