@@ -153,35 +153,34 @@ def extract_features_from_samples_in_directory():
     families = os.listdir(src)
     num_families = len(families)
     num_families_processed = 0
-    for family in families:
-        family_src = os.path.join(src, family)
-        family_dst = os.path.join(dst, family)
-        if not os.path.exists(family_dst):
-            os.makedirs(family_dst)
-        features = {}
-        samples = os.listdir(family_src)
-        num_files = len(samples)
-        num_files_processed = 0
-        percentage = utils.get_percentage(num_files_processed, num_files)
-        extractor = PEFeatureExtractor()
-        print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}%")
-        for sample in samples:
-            filepath = os.path.join(family_src, sample)
-            with open(filepath, 'rb') as f:
-                bytes = f.read()
+    features_df_path = os.path.join(dst, 'data.pkl')
+    if not os.path.exists(features_df_path):
+        for family in families:
+            family_src = os.path.join(src, family)
+            features = {}
+            samples = os.listdir(family_src)
+            num_files = len(samples)
+            num_files_processed = 0
+            percentage = utils.get_percentage(num_files_processed, num_files)
+            extractor = PEFeatureExtractor()
+            print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}%")
+            for sample in samples:
+                filepath = os.path.join(family_src, sample)
+                with open(filepath, 'rb') as f:
+                    bytes = f.read()
 
-            features = [str(value) for value in extractor.feature_vector(bytes)]
-            features_df = {'label': family, 'id': sample}
-            features_df.update({'feature_' + str(i): float(feature) for i, feature in enumerate(features)})
-            dataframe = dataframe.append(features_df, ignore_index=True)
-            num_files_processed += 1
-            new_percentage = utils.get_percentage(num_files_processed, num_files)
-            if new_percentage > percentage:
-                percentage = new_percentage
-                print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}%")
-        num_families_processed += 1
+                features = [str(value) for value in extractor.feature_vector(bytes)]
+                features_df = {'label': family, 'id': sample}
+                features_df.update({'feature_' + str(i): float(feature) for i, feature in enumerate(features)})
+                dataframe = dataframe.append(features_df, ignore_index=True)
+                num_files_processed += 1
+                new_percentage = utils.get_percentage(num_files_processed, num_files)
+                if new_percentage > percentage:
+                    percentage = new_percentage
+                    print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}%")
+            num_families_processed += 1
 
-    dataframe.to_pickle(os.path.join(dst, 'data.pkl'))
+        dataframe.to_pickle(features_df_path)
 
 
 def count_samples_with_features():
