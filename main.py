@@ -148,7 +148,7 @@ def extract_features_from_samples_in_directory():
     src = args['src']
     dst = args['dst']
     features_df_path = os.path.join(dst, 'data.pkl')
-    print("fake")
+
     if not os.path.exists(features_df_path):
 
         dataframe = pd.DataFrame()
@@ -183,7 +183,9 @@ def extract_features_from_samples_in_directory():
 
                 break
             num_families_processed += 1
-
+            
+        if not os.path.exists(dst):
+            os.makedirs(dst)
         dataframe.to_pickle(features_df_path)
 
 
