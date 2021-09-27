@@ -148,6 +148,7 @@ def extract_features_from_samples_in_directory():
     src = args['src']
     dst = args['dst']
     features_df_path = os.path.join(dst, 'data.pkl')
+    print("fake")
     if not os.path.exists(features_df_path):
 
         dataframe = pd.DataFrame()
@@ -155,7 +156,7 @@ def extract_features_from_samples_in_directory():
         families = os.listdir(src)
         num_families = len(families)
         num_families_processed = 0
-    
+
         for family in families:
             family_src = os.path.join(src, family)
             features = {}
@@ -179,6 +180,8 @@ def extract_features_from_samples_in_directory():
                 if new_percentage > percentage:
                     percentage = new_percentage
                     print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}%")
+
+                break
             num_families_processed += 1
 
         dataframe.to_pickle(features_df_path)
