@@ -147,14 +147,15 @@ def extract_features_from_samples_in_directory():
     args = vars(parser.parse_args())
     src = args['src']
     dst = args['dst']
-
-    dataframe = pd.DataFrame()
-
-    families = os.listdir(src)
-    num_families = len(families)
-    num_families_processed = 0
     features_df_path = os.path.join(dst, 'data.pkl')
     if not os.path.exists(features_df_path):
+
+        dataframe = pd.DataFrame()
+
+        families = os.listdir(src)
+        num_families = len(families)
+        num_families_processed = 0
+    
         for family in families:
             family_src = os.path.join(src, family)
             features = {}
