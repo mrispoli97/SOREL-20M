@@ -180,10 +180,8 @@ def extract_features_from_samples_in_directory():
                 if new_percentage > percentage:
                     percentage = new_percentage
                     print(f"[{num_families_processed + 1}/{num_families}] Elaborating features... {percentage}%")
-
-                break
             num_families_processed += 1
-            
+
         if not os.path.exists(dst):
             os.makedirs(dst)
         dataframe.to_pickle(features_df_path)
